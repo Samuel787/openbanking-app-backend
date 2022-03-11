@@ -1,15 +1,19 @@
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from dbmanager import db
+from controller import addBook, addForexData, addForexNews
+from util.forex_data_schema import forex_data_schema
+from util.forex_news_schema import forex_news_schema
 
 app = Flask(__name__)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-from models import Book
-from models import Forex_Data
+# db = SQLAlchemy(app)
+db.init_app(app)
+# from models import Book
+# from models import Forex_Data
 
 @app.route("/")
 def hello():
@@ -17,20 +21,40 @@ def hello():
 
 @app.route("/add")
 def add_book():
+    print("incoming request")
     name=request.args.get('name')
     author=request.args.get('author')
     published=request.args.get('published')
-    try:
-        book=Book(
-            name=name,
-            author=author,
-            published=published
-        )
-        db.session.add(book)
-        db.session.commit()
-        return "Book added. book id={}".format(book.id)
-    except Exception as e:
-	    return(str(e))
+    return addBook(name, author, published)
+
+@app.route("/data", methods=["POST"])
+def add_forex_data():
+    if request.method == "POST":
+        date=request.json["date"]
+        price=request.json["price"]
+        open=request.json["open"]
+        high=request.json["high"]
+        low=request.json["low"]
+        change_percent=request.json["change_percent"]
+        difference=request.json["difference"]
+        label=request.json["label"]
+        try:
+            date, price, open, high, low, change_percent, difference, label = forex_data_schema(date, price, open, high, low, change_percent, difference, label)
+            return addForexData(date, price, open, high, low, change_percent, difference, label)
+        except Exception as e:
+            return str(e)
+
+@app.route("/news", methods=["POST"])
+def add_forex_news():
+    if request.method == "POST":
+        date=request.json["date"]
+        title=request.json["title"]
+        article=request.json["article"]
+        try:
+            date, title, article = forex_news_schema(date, title, article)
+            return addForexNews(date, title, article)
+        except Exception as e:
+            return str(e)
 
 @app.route("/getall")
 def get_all():
@@ -47,6 +71,7 @@ def get_by_id(id_):
         return jsonify(book.serialize())
     except Exception as e:
 	    return(str(e))
+
 
 if __name__ == '__main__':
     app.run()

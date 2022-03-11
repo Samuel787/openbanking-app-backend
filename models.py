@@ -1,5 +1,5 @@
-from app import db
-
+#  from app import db
+from dbmanager import db
 class Book(db.Model):
     __tablename__ = 'books'
 
@@ -7,6 +7,7 @@ class Book(db.Model):
     name = db.Column(db.String())
     author = db.Column(db.String())
     published = db.Column(db.String())
+    db.UniqueConstraint(name, author)
 
     def __init__(self, name, author, published):
         self.name = name
@@ -36,6 +37,7 @@ class Forex_Data(db.Model):
     change_percent = db.Column(db.Float())
     difference = db.Column(db.Float())
     label = db.Column(db.Float())
+    db.UniqueConstraint(date)
 
     def __init__(self, date, price, open, high, low, change_percent, difference, label):
         self.date = date
@@ -70,6 +72,7 @@ class Forex_News(db.Model):
     date = db.Column(db.DateTime())
     title = db.Column(db.String())
     article = db.Column(db.String())
+    db.UniqueConstraint(date, title)
 
     def __init__(self, date, title, article):
         self.date = date

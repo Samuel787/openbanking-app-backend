@@ -37,7 +37,7 @@ def addForexData(date, price, open, high, low, change_percent, difference, label
 
 def addForexNews(date, title, article):
     try:
-        date = date.split("/")
+        date = date.split("-")
         date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
         forexNews = Forex_News(
             date=date,

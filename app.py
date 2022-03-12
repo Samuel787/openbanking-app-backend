@@ -2,9 +2,10 @@ import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dbmanager import db
-from controller import addBook, addForexData, addForexNews
+from controller import addBook, addForexData, addForexNews, getFXData, getNewsData
 from util.forex_data_schema import forex_data_schema
 from util.forex_news_schema import forex_news_schema
+from util.fx_get_schema import fx_get_schema
 
 app = Flask(__name__)
 
@@ -44,7 +45,7 @@ def add_forex_data():
         except Exception as e:
             return str(e)
 
-@app.route("/news", methods=["POST"])
+@app.route("/news", methods=["POST", "GET"])
 def add_forex_news():
     if request.method == "POST":
         date=request.json["date"]
@@ -53,6 +54,25 @@ def add_forex_news():
         try:
             date, title, article = forex_news_schema(date, title, article)
             return addForexNews(date, title, article)
+        except Exception as e:
+            return str(e)
+    elif request.method == "GET":
+        num = request.args.get("limit")
+        try:
+            if int(num) <= 0:
+                raise Exception("limit should be at least 1")
+            return getNewsData(num)
+        except Exception as e:
+            return str(e)
+
+@app.route("/fx", methods=["GET"])
+def get_fx_data():
+    if request.method == "GET":
+        start_date=request.args.get('start')
+        end_date=request.args.get("end")
+        try:
+            start_date, end_date = fx_get_schema(start_date, end_date)
+            return getFXData(start_date, end_date)
         except Exception as e:
             return str(e)
 
@@ -71,6 +91,8 @@ def get_by_id(id_):
         return jsonify(book.serialize())
     except Exception as e:
 	    return(str(e))
+
+
 
 
 if __name__ == '__main__':

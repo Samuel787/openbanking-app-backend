@@ -1,6 +1,7 @@
 from models import Book, Forex_Data, Forex_News
 from dbmanager import db
 import datetime
+from flask import jsonify
 
 def addBook(name, author, published):
     try:
@@ -49,3 +50,24 @@ def addForexNews(date, title, article):
         return "Forex News Added. news id={}".format(forexNews.id)
     except Exception as e:
         return (str(e))
+
+def getFXData(start_date, end_date):
+    try:
+        qry2 = Forex_Data.query.filter(Forex_Data.date.between(start_date, end_date)).all()
+        result = []
+        for forexData in qry2:
+            result.append(forexData.serialize())
+        return jsonify(result)
+    except Exception as e:
+        return (str(e))
+
+def getNewsData(limit):
+    try:
+        qry = Forex_News.query.order_by(Forex_News.date.desc()).limit(limit).all()
+        result = []
+        for forexNews in qry:
+            result.append(forexNews.serialize())
+        return jsonify(result)
+    except Exception as e:
+        return (str(e))
+        

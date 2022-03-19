@@ -39,9 +39,19 @@ def add_forex_data():
         change_percent=request.json["change_percent"]
         difference=request.json["difference"]
         label=request.json["label"]
+        sma=request.json["sma"]
+        ema=request.json["ema"]
+        macd=request.json["macd"]
+        macd_s=request.json["macd_s"]
+        macd_h=request.json["macd_h"]
+        roc=request.json["roc"]
+        rsi=request.json["rsi"]
+        bollinger_up=request.json["bollinger_up"]
+        bollinger_down=request.json["bollinger_down"]
+        cci=request.json["cci"]
         try:
-            date, price, open, high, low, change_percent, difference, label = forex_data_schema(date, price, open, high, low, change_percent, difference, label)
-            return addForexData(date, price, open, high, low, change_percent, difference, label)
+            date, price, open, high, low, change_percent, difference, label, sma, ema, macd, macd_s, macd_h, roc, rsi, bollinger_up, bollinger_down, cci = forex_data_schema(date, price, open, high, low, change_percent, difference, label, sma, ema, macd, macd_s, macd_h, roc, rsi, bollinger_up, bollinger_down, cci)
+            return addForexData(date, price, open, high, low, change_percent, difference, label, sma, ema, macd, macd_s, macd_h, roc, rsi, bollinger_up, bollinger_down, cci)
         except Exception as e:
             return str(e)
 

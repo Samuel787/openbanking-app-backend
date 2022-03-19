@@ -16,7 +16,7 @@ def addBook(name, author, published):
     except Exception as e:
 	    return(str(e))
 
-def addForexData(date, price, open, high, low, change_percent, difference, label):
+def addForexData(date, price, open, high, low, change_percent, difference, label, sma, ema, macd, macd_s, macd_h, roc, rsi, bollinger_up, bollinger_down, cci):
     try:
         date = date.split("-")
         date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
@@ -28,7 +28,17 @@ def addForexData(date, price, open, high, low, change_percent, difference, label
             low=low,
             change_percent=change_percent,
             difference=difference,
-            label=label
+            label=label,
+            sma=sma,
+            ema=ema,
+            macd=macd,
+            macd_s=macd_s,
+            macd_h=macd_h,
+            roc=roc,
+            rsi=rsi,
+            bollinger_up=bollinger_up,
+            bollinger_down=bollinger_down,
+            cci=cci
         )
         db.session.add(forexData)
         db.session.commit()

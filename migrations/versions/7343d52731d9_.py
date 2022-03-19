@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 002615e043e7
-Revises: 39314c4cb5ca
-Create Date: 2022-03-06 14:56:55.941917
+Revision ID: 7343d52731d9
+Revises: 
+Create Date: 2022-03-19 00:48:01.921408
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '002615e043e7'
-down_revision = '39314c4cb5ca'
+revision = '7343d52731d9'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -23,7 +23,8 @@ def upgrade():
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('article', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('date', 'title')
     )
     op.create_table('forexdata',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -35,7 +36,18 @@ def upgrade():
     sa.Column('change_percent', sa.Float(), nullable=True),
     sa.Column('difference', sa.Float(), nullable=True),
     sa.Column('label', sa.Float(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('sma', sa.Float(), nullable=True),
+    sa.Column('ema', sa.Float(), nullable=True),
+    sa.Column('macd', sa.Float(), nullable=True),
+    sa.Column('macd_s', sa.Float(), nullable=True),
+    sa.Column('macd_h', sa.Float(), nullable=True),
+    sa.Column('roc', sa.Float(), nullable=True),
+    sa.Column('rsi', sa.Float(), nullable=True),
+    sa.Column('bollinger_up', sa.Float(), nullable=True),
+    sa.Column('bollinger_down', sa.Float(), nullable=True),
+    sa.Column('cci', sa.Float(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('date')
     )
     # ### end Alembic commands ###
 

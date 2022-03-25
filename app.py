@@ -6,8 +6,13 @@ from controller import addBook, addForexData, addForexNews, getFXData, getNewsDa
 from util.forex_data_schema import forex_data_schema
 from util.forex_news_schema import forex_news_schema
 from util.fx_get_schema import fx_get_schema
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+
+# adding cors 
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -17,10 +22,12 @@ db.init_app(app)
 # from models import Forex_Data
 
 @app.route("/")
+@cross_origin()
 def hello():
     return "Hello World!"
 
 @app.route("/add")
+@cross_origin()
 def add_book():
     print("incoming request")
     name=request.args.get('name')
@@ -29,6 +36,7 @@ def add_book():
     return addBook(name, author, published)
 
 @app.route("/data", methods=["POST"])
+@cross_origin()
 def add_forex_data():
     if request.method == "POST":
         date=request.json["date"]
@@ -56,6 +64,7 @@ def add_forex_data():
             return str(e)
 
 @app.route("/news", methods=["POST", "GET"])
+@cross_origin()
 def add_forex_news():
     if request.method == "POST":
         date=request.json["date"]
@@ -76,6 +85,7 @@ def add_forex_news():
             return str(e)
 
 @app.route("/fx", methods=["GET"])
+@cross_origin()
 def get_fx_data():
     if request.method == "GET":
         start_date=request.args.get('start')
@@ -87,6 +97,7 @@ def get_fx_data():
             return str(e)
 
 @app.route("/getall")
+@cross_origin()
 def get_all():
     try:
         books=Book.query.all()
@@ -95,15 +106,13 @@ def get_all():
 	    return(str(e))
 
 @app.route("/get/<id_>")
+@cross_origin()
 def get_by_id(id_):
     try:
         book=Book.query.filter_by(id=id_).first()
         return jsonify(book.serialize())
     except Exception as e:
 	    return(str(e))
-
-
-
 
 if __name__ == '__main__':
     app.run()

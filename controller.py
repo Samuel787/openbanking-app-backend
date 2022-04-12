@@ -18,6 +18,7 @@ def addBook(name, author, published):
 
 def addForexData(date, price, open, high, low, change_percent, difference, label, sma, ema, macd, macd_s, macd_h, roc, rsi, bollinger_up, bollinger_down, cci):
     try:
+        deleteFXData(date)
         date = date.split("-")
         date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
         forexData=Forex_Data(
@@ -44,6 +45,7 @@ def addForexData(date, price, open, high, low, change_percent, difference, label
         db.session.commit()
         return "Forex Data Added. data id={}".format(forexData.id)
     except Exception as e:
+        
         return (str(e))
 
 def addForexNews(date, title, article):
@@ -63,11 +65,22 @@ def addForexNews(date, title, article):
 
 def getFXData(start_date, end_date):
     try:
-        qry2 = Forex_Data.query.filter(Forex_Data.date.between(start_date, end_date)).all()
+        qry2 = Forex_Data.query.filter(Forex_Data.date.between(start_date, end_date)).order_by(Forex_Data.date.asc()).all()
         result = []
         for forexData in qry2:
             result.append(forexData.serialize())
         return jsonify(result)
+    except Exception as e:
+        return (str(e))
+
+def deleteFXData(date):
+    date = date.split("-")
+    date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
+    try:
+        query = Forex_Data.query.filter(Forex_Data.date == date).delete()
+        print(f"This is the query result: {query}")
+        db.session.commit()
+        return "ok"
     except Exception as e:
         return (str(e))
 

@@ -2,10 +2,11 @@ import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dbmanager import db
-from controller import addBook, addForexData, addForexNews, getFXData, getNewsData
+from controller import addBook, addForexData, addForexNews, deleteFXData, getFXData, getNewsData
 from util.forex_data_schema import forex_data_schema
 from util.forex_news_schema import forex_news_schema
 from util.fx_get_schema import fx_get_schema
+from util.fx_delete_schema import fx_delete_schema
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
@@ -84,7 +85,7 @@ def add_forex_news():
         except Exception as e:
             return str(e)
 
-@app.route("/fx", methods=["GET"])
+@app.route("/fx", methods=["GET", "DELETE"])
 @cross_origin()
 def get_fx_data():
     if request.method == "GET":
@@ -93,6 +94,13 @@ def get_fx_data():
         try:
             start_date, end_date = fx_get_schema(start_date, end_date)
             return getFXData(start_date, end_date)
+        except Exception as e:
+            return str(e)
+    elif request.method == "DELETE":
+        date = request.args.get("date")
+        try:
+            date = fx_delete_schema(date)
+            return deleteFXData(date)
         except Exception as e:
             return str(e)
 

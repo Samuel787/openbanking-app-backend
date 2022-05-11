@@ -2,12 +2,14 @@ import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dbmanager import db
-from controller import addBook, addForexData, addForexNews, deleteFXData, getFXData, getNewsData
+from controller import addBook, addForexData, addForexNews, deleteFXData, deleteNewsData, getFXData, getNewsData
 from util.forex_data_schema import forex_data_schema
 from util.forex_news_schema import forex_news_schema
 from util.fx_get_schema import fx_get_schema
 from util.fx_delete_schema import fx_delete_schema
 from flask_cors import CORS, cross_origin
+
+from util.news_delete_schema import news_delete_schema
 
 app = Flask(__name__)
 
@@ -50,7 +52,7 @@ def add_forex_data():
         except Exception as e:
             return str(e)
 
-@app.route("/news", methods=["POST", "GET"])
+@app.route("/news", methods=["POST", "GET", "DELETE"])
 @cross_origin()
 def add_forex_news():
     if request.method == "POST":
@@ -72,6 +74,15 @@ def add_forex_news():
             if int(num) <= 0:
                 raise Exception("limit should be at least 1")
             return getNewsData(num)
+        except Exception as e:
+            return str(e)
+    elif request.method == "DELETE":
+        if not authRequest(request.args.get("token")):
+            return "403 Forbidden"
+        try:
+            date = request.args.get("date")
+            date = news_delete_schema(date)
+            return deleteNewsData(date)
         except Exception as e:
             return str(e)
 

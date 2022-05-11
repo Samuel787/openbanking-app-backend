@@ -84,6 +84,17 @@ def deleteFXData(date):
     except Exception as e:
         return (str(e))
 
+def deleteNewsData(date):
+    date = date.split("-")
+    date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
+    try:
+        query = Forex_News.query.filter(Forex_News.date == date).delete()
+        print(f"This is the query result: {query}")
+        db.session.commit()
+        return "ok"
+    except Exception as e:
+        return (str(e))
+        
 def getNewsData(limit):
     try:
         qry = Forex_News.query.order_by(Forex_News.date.desc()).limit(limit).all()

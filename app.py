@@ -20,24 +20,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(app)
 db.init_app(app)
 
-@app.route("/")
-@cross_origin()
-def hello():
-    return "Hello World!"
-
-@app.route("/add")
-@cross_origin()
-def add_book():
-    print("incoming request")
-    name=request.args.get('name')
-    author=request.args.get('author')
-    published=request.args.get('published')
-    return addBook(name, author, published)
-
 @app.route("/data", methods=["POST"])
 @cross_origin()
 def add_forex_data():
     if request.method == "POST":
+        if "token" not in request.json or not authRequest(request.json["token"]):
+            return "403 Forbidden"
         date=request.json["date"]
         price=request.json["price"]
         open=request.json["open"]
@@ -69,6 +57,8 @@ def add_forex_news():
         date=request.json["date"]
         title=request.json["title"]
         article=request.json["article"]
+        if "token" not in request.json or not authRequest(request.json["token"]):
+            return "403 Forbidden"
         try:
             date, title, article = forex_news_schema(date, title, article)
             return addForexNews(date, title, article)
@@ -76,6 +66,8 @@ def add_forex_news():
             return str(e)
     elif request.method == "GET":
         num = request.args.get("limit")
+        if not authRequest(request.args.get("token")):
+            return "403 Forbidden"
         try:
             if int(num) <= 0:
                 raise Exception("limit should be at least 1")
@@ -89,6 +81,8 @@ def get_fx_data():
     if request.method == "GET":
         start_date=request.args.get('start')
         end_date=request.args.get("end")
+        if not authRequest(request.args.get("token")):
+            return "403 Forbidden"
         try:
             start_date, end_date = fx_get_schema(start_date, end_date)
             return getFXData(start_date, end_date)
@@ -96,11 +90,18 @@ def get_fx_data():
             return str(e)
     elif request.method == "DELETE":
         date = request.args.get("date")
+        if not authRequest(request.args.get("token")):
+            return "403 Forbidden"
         try:
             date = fx_delete_schema(date)
             return deleteFXData(date)
         except Exception as e:
             return str(e)
+
+def authRequest(secret):
+    if secret == os.environ['SECRET']:
+        return True
+    return False
 
 if __name__ == '__main__':
     app.run()

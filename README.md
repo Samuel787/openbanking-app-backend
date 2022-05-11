@@ -19,6 +19,8 @@ https://medium.com/@dushan14/create-a-web-application-with-python-flask-postgres
 ## Viewing content in remote heroku db
 1. `heroku pg:psql --app openbanking-application`
 
+
 # Exposed APIs
 
+## 
 ## Adding forex data

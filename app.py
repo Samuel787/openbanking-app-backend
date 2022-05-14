@@ -61,9 +61,12 @@ def add_forex_news():
         article=request.json["article"]
         if "token" not in request.json or not authRequest(request.json["token"]):
             return "403 Forbidden"
+        sentiment = None
+        if "sentiment" in request.json:
+            sentiment = request.json["sentiment"]
         try:
-            date, title, article = forex_news_schema(date, title, article)
-            return addForexNews(date, title, article)
+            date, title, article, sentiment = forex_news_schema(date, title, article, sentiment)
+            return addForexNews(date, title, article, sentiment)
         except Exception as e:
             return str(e)
     elif request.method == "GET":

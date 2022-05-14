@@ -18,6 +18,8 @@ https://medium.com/@dushan14/create-a-web-application-with-python-flask-postgres
 
 ## Viewing content in remote heroku db
 1. `heroku pg:psql --app openbanking-application`
+2. View all relations: `\dt`
+3. View schema for a relation `\d relation_name`
 
 ## Pushing code to production (Initiate build in Heroku)
 1. `git checkout main`
@@ -208,6 +210,7 @@ A `POST` request has to be made to https://openbanking-application.herokuapp.com
 | "date"  | "2023-01-02" | yes |
 | "title" | "Some title" | yes |
 | "article" | "Some article" | yes |
+| "sentiment"| 1 (float and -1 is default) | yes|
 
 Example of JSON content:
 ```

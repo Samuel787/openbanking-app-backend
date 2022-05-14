@@ -11,5 +11,5 @@ def forex_news_schema(date, title, article, sentiment):
         article = ""
     article = str(article)
     if sentiment == None:
-        sentiment = -1
+        sentiment = -10
     return date, title, article, sentiment

@@ -48,14 +48,15 @@ def addForexData(date, price, open, high, low, change_percent, difference, label
         
         return (str(e))
 
-def addForexNews(date, title, article):
+def addForexNews(date, title, article, sentiment):
     try:
         date = date.split("-")
         date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
         forexNews = Forex_News(
             date=date,
             title=title,
-            article=article
+            article=article,
+            sentiment=sentiment
         )
         db.session.add(forexNews)
         db.session.commit()

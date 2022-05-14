@@ -1,4 +1,4 @@
-def forex_news_schema(date, title, article):
+def forex_news_schema(date, title, article, sentiment):
     date_temp = date.split("-")
     if len(date_temp) != 3:
         raise Exception("Error in date format")
@@ -10,4 +10,6 @@ def forex_news_schema(date, title, article):
     if article == None:
         article = ""
     article = str(article)
-    return date, title, article
+    if sentiment == None:
+        sentiment = -1
+    return date, title, article, sentiment

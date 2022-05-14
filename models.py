@@ -101,12 +101,14 @@ class Forex_News(db.Model):
     date = db.Column(db.DateTime())
     title = db.Column(db.String())
     article = db.Column(db.String())
+    sentiment = db.Column(db.Float())
     db.UniqueConstraint(date, title)
 
-    def __init__(self, date, title, article):
+    def __init__(self, date, title, article, sentiment):
         self.date = date
         self.title = title
         self.article = article
+        self.sentiment = sentiment
     
     def __repr__(self):
         return "<id {}>".format(self.id)
@@ -116,7 +118,8 @@ class Forex_News(db.Model):
             "id": self.id,
             "date": self.date,
             "title": self.title,
-            "article": self.article
+            "article": self.article,
+            "sentiment": self.sentiment
         }
 
 
